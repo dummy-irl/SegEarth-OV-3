@@ -30,7 +30,7 @@ class SegEarthOV3Segmentation(BaseSegmentor):
         # Initialize SAM3 model
         model = build_sam3_image_model(
             bpe_path="./sam3/assets/bpe_simple_vocab_16e6.txt.gz", 
-            checkpoint_path='weights/sam3/sam3.pt', 
+            checkpoint_path="/kaggle/input/datasets/dummyirl/sam3-weights/sam3.pt", 
             device="cuda"
         )
         self.processor = Sam3Processor(model, confidence_threshold=confidence_threshold, device=device)

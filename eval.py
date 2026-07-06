@@ -1,4 +1,5 @@
 import os
+os.environ["MPLBACKEND"] = "Agg" # Use non-GUI backend for headless environments
 import os.path as osp
 import argparse
 import openpyxl
@@ -9,12 +10,13 @@ import segearthov3_segmentor
 import segearthov3_change_detector
 import custom_datasets
 import custom_transforms
+import custom_metrics # Register custom evaluation metrics
 
 
 def parse_args():
     parser = argparse.ArgumentParser(
         description='CorrCLIP evaluation with MMSeg')
-    parser.add_argument('config', default='./configs/cfg_loveda.py')
+    parser.add_argument('config', default='./configs/cfg_potsdam.py')
     parser.add_argument(
         '--show', action='store_true', help='show prediction results')
     parser.add_argument(
@@ -65,6 +67,10 @@ def append_experiment_result(file_path, experiment_data):
         sheet['C1'] = 'aAcc'
         sheet['D1'] = 'mIoU'
         sheet['E1'] = 'mAcc'
+        # commented below if using normal metrics
+        sheet['F1'] = 'mIoU_NoClutter'
+        sheet['G1'] = 'mAcc_NoClutter'
+        sheet['H1'] = 'mFscore_NoClutter'
 
     last_row = sheet.max_row
 
@@ -74,6 +80,10 @@ def append_experiment_result(file_path, experiment_data):
         sheet.cell(row=last_row + index, column=3, value=result['aAcc'])
         sheet.cell(row=last_row + index, column=4, value=result['mIoU'])
         sheet.cell(row=last_row + index, column=5, value=result['mAcc'])
+        # commented below if using normal metrics
+        sheet.cell(row=last_row + index, column=6, value=result['mIoU_NoClutter'])
+        sheet.cell(row=last_row + index, column=7, value=result['mAcc_NoClutter'])
+        sheet.cell(row=last_row + index, column=8, value=result['mFscore_NoClutter'])
 
     workbook.save(file_path)
 
@@ -113,7 +123,7 @@ def main():
     cfg.work_dir = osp.join('./work_dirs',
                             osp.splitext(osp.basename(args.config))[0])
 
-    # trigger_visualization_hook(cfg, args)
+    cfg = trigger_visualization_hook(cfg, args) # comment this line if you don't want to visualize the results
     runner = Runner.from_cfg(cfg)
     results = runner.test()
 

@@ -5,8 +5,7 @@ model = dict(
     model_type='SAM3'
 )
 
-test_evaluator = dict(type='IoUMetric', iou_metrics=['mIoU', 'mFscore'])
-
+test_evaluator = dict(type='IoUMetricNoClutter', iou_metrics=['mIoU', 'mFscore']) # replace with IoUMetric for original metrics
 default_scope = 'mmseg'
 env_cfg = dict(
     cudnn_benchmark=True,

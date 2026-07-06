@@ -6,6 +6,8 @@ model = dict(
     prob_thd=0.1,
     confidence_threshold=0.2,
     bg_idx=5,
+    slide_stride=1024,
+    slide_crop=1024,
 )
 
 # dataset settings
@@ -20,8 +22,8 @@ test_pipeline = [
 
 test_dataloader = dict(
     batch_size=1,
-    num_workers=4,
-    persistent_workers=True,
+    num_workers=0, 
+    persistent_workers=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
         type=dataset_type,
